@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java 21 Specialist Training Workbook - Sample Code (Framework)</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --panel: #ffffff;
+    --border: #e2e5ea;
+    --ink: #1f2329;
+    --muted: #6b7280;
+    --accent: #2f6feb;
+    --accent-ink: #ffffff;
+    --code-bg: #0f172a;
+    --code-ink: #e2e8f0;
+    --preview: #b45309;
+    --preview-bg: #fef3c7;
+    --ok: #15803d;
+    --err: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  header {
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 22px;
+  }
+  header h1 { font-size: 18px; margin: 0; }
+  header p { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+  .layout { display: flex; min-height: calc(100vh - 58px); }
+  .sidebar {
+    width: 320px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    background: var(--panel);
+    overflow-y: auto;
+    max-height: calc(100vh - 58px);
+  }
+  .chapter-group { border-bottom: 1px solid var(--border); }
+  .chapter-title {
+    font-size: 12px; font-weight: 700; color: var(--muted);
+    padding: 10px 16px 4px; text-transform: none; letter-spacing: .02em;
+  }
+  .sample-item {
+    padding: 8px 16px 8px 22px;
+    cursor: pointer;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .sample-item:hover { background: #eef2ff; }
+  .sample-item.active { background: #eef2ff; border-left-color: var(--accent); font-weight: 600; }
+  .sample-item .qno { color: var(--accent); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .badge {
+    font-size: 10px; padding: 1px 6px; border-radius: 10px;
+    background: var(--preview-bg); color: var(--preview); font-weight: 700;
+  }
+  .main { flex: 1; padding: 22px 26px; overflow-y: auto; max-height: calc(100vh - 58px); }
+  .placeholder { color: var(--muted); margin-top: 40px; text-align: center; }
+  .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .meta h2 { font-size: 18px; margin: 0; }
+  .meta .sub { color: var(--muted); font-size: 13px; }
+  .actions { margin: 14px 0; }
+  button.run {
+    background: var(--accent); color: var(--accent-ink); border: none;
+    padding: 9px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 600;
+  }
+  button.run:hover { filter: brightness(1.08); }
+  button.run:disabled { opacity: .5; cursor: default; }
+  .section-label { font-size: 12px; font-weight: 700; color: var(--muted); margin: 18px 0 6px; }
+  pre {
+    background: var(--code-bg); color: var(--code-ink);
+    padding: 14px 16px; border-radius: 8px; overflow-x: auto;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 12.5px; line-height: 1.55; margin: 0; white-space: pre;
+  }
+  pre.output { min-height: 48px; }
+  .src-block { margin-bottom: 12px; }
+  .status { font-size: 12px; margin: 6px 0; }
+  .status.ok { color: var(--ok); }
+  .status.err { color: var(--err); }
+  .hint { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Java 21 Specialist Training Workbook &mdash; Sample Code（フレームワーク編）</h1>
+  <p>『Java 21 スペシャリスト育成問題集』第11〜20章のコード実行環境（Spring Boot 3 / Hibernate / H2 インメモリ）</p>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main" id="main">
+    <div class="placeholder">左の一覧からサンプルを選んでください。</div>
+  </main>
+</div>
+
+<script>
+let samples = [];
+let activeId = null;
+
+async function loadSamples() {
+  const res = await fetch('api/samples');
+  samples = await res.json();
+  renderSidebar();
+}
+
+function renderSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const groups = {};
+  for (const s of samples) {
+    (groups[s.chapter] = groups[s.chapter] || []).push(s);
+  }
+  sidebar.innerHTML = '';
+  for (const chapter of Object.keys(groups)) {
+    const g = document.createElement('div');
+    g.className = 'chapter-group';
+    const title = document.createElement('div');
+    title.className = 'chapter-title';
+    title.textContent = chapter.replace(/_/g, ' ');
+    g.appendChild(title);
+    for (const s of groups[chapter]) {
+      const item = document.createElement('div');
+      item.className = 'sample-item' + (s.id === activeId ? ' active' : '');
+      item.dataset.id = s.id;
+      const qno = document.createElement('span');
+      qno.className = 'qno';
+      qno.textContent = 'Q' + String(s.problem).padStart(2, '0');
+      const t = document.createElement('span');
+      t.textContent = s.title;
+      item.appendChild(qno);
+      item.appendChild(t);
+      if (s.preview) {
+        const b = document.createElement('span');
+        b.className = 'badge';
+        b.textContent = 'Preview';
+        item.appendChild(b);
+      }
+      item.onclick = () => selectSample(s.id);
+      g.appendChild(item);
+    }
+    sidebar.appendChild(g);
+  }
+}
+
+function selectSample(id) {
+  activeId = id;
+  renderSidebar();
+  const s = samples.find(x => x.id === id);
+  if (!s) return;
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  const h2 = document.createElement('h2');
+  h2.textContent = s.title;
+  meta.appendChild(h2);
+  if (s.preview) {
+    const b = document.createElement('span');
+    b.className = 'badge';
+    b.textContent = 'Preview (--enable-preview)';
+    meta.appendChild(b);
+  }
+  const sub = document.createElement('div');
+  sub.className = 'sub';
+  sub.textContent = '第' + parseInt(s.chapter) + '章 ' + s.chapter.replace(/_/g, ' ') + ' / 問題' + s.problem;
+  main.appendChild(meta);
+  main.appendChild(sub);
+
+  const actions = document.createElement('div');
+  actions.className = 'actions';
+  const btn = document.createElement('button');
+  btn.className = 'run';
+  btn.textContent = '▶ 実行する';
+  btn.onclick = () => runSample(s.id, btn);
+  actions.appendChild(btn);
+  main.appendChild(actions);
+
+  const outLabel = document.createElement('div');
+  outLabel.className = 'section-label';
+  outLabel.textContent = '実行結果';
+  main.appendChild(outLabel);
+  const status = document.createElement('div');
+  status.className = 'status';
+  status.id = 'status';
+  main.appendChild(status);
+  const out = document.createElement('pre');
+  out.className = 'output';
+  out.id = 'output';
+  out.textContent = '(まだ実行していません)';
+  main.appendChild(out);
+
+  const srcLabel = document.createElement('div');
+  srcLabel.className = 'section-label';
+  srcLabel.textContent = '本書掲載のコード';
+  main.appendChild(srcLabel);
+
+  // 本文の各 Java コードブロックをそのまま（1ブロック=1ボックス）で表示
+  const blocks = s.source.split('@@BLOCK@@')
+      .map(b => b.replace(/^\n+/, '').replace(/\s+$/, ''))
+      .filter(b => b.length > 0);
+  (blocks.length ? blocks : ['(本文コード未登録)']).forEach(code => {
+    const pre = document.createElement('pre');
+    pre.className = 'src-block';
+    pre.textContent = code;
+    main.appendChild(pre);
+  });
+}
+
+async function runSample(id, btn) {
+  const status = document.getElementById('status');
+  const out = document.getElementById('output');
+  btn.disabled = true;
+  status.className = 'status';
+  status.textContent = '実行中...';
+  out.textContent = '';
+  try {
+    const res = await fetch('api/run?id=' + encodeURIComponent(id));
+    const data = await res.json();
+    out.textContent = data.output;
+    if (data.error) {
+      status.className = 'status err';
+      status.textContent = '✗ 例外が発生しました (' + data.millis + ' ms)';
+    } else {
+      status.className = 'status ok';
+      status.textContent = '✓ 正常終了 (' + data.millis + ' ms)';
+    }
+  } catch (e) {
+    status.className = 'status err';
+    status.textContent = '通信エラー: ' + e;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+loadSamples();
+</script>
+</body>
+</html>
