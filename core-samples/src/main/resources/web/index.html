@@ -111,6 +111,35 @@
 let samples = [];
 let activeId = null;
 
+const CHAPTER_NAMES = {
+  1: '言語仕様とオブジェクト指向',
+  2: 'Java 21 の新機能',
+  3: '例外処理',
+  4: 'コレクションとジェネリクス',
+  5: 'ストリーム・ラムダ・関数型',
+  6: 'I/O と NIO',
+  7: '並行処理とスレッド',
+  8: 'メモリ・GC・パフォーマンス',
+  9: 'JPMS とモジュール化',
+  10: 'デザインパターン',
+  11: 'アーキテクチャ',
+  12: 'データベースと JDBC',
+  13: 'JPA と永続化',
+  14: 'Spring Boot',
+  15: 'REST API と HTTP',
+  16: 'セキュリティと認証',
+  17: 'テスト',
+  18: 'デプロイと DevOps',
+  19: 'ロギングと可観測性',
+  20: 'デバッグとプロファイリング',
+};
+
+function chapterLabel(chapterKey) {
+  const n = parseInt(chapterKey, 10);
+  const name = CHAPTER_NAMES[n] || String(chapterKey).replace(/_/g, ' ');
+  return '第' + n + '章 ' + name;
+}
+
 async function loadSamples() {
   const res = await fetch('api/samples');
   samples = await res.json();
@@ -129,7 +158,7 @@ function renderSidebar() {
     g.className = 'chapter-group';
     const title = document.createElement('div');
     title.className = 'chapter-title';
-    title.textContent = chapter.replace(/_/g, ' ');
+    title.textContent = chapterLabel(chapter);
     g.appendChild(title);
     for (const s of groups[chapter]) {
       const item = document.createElement('div');
@@ -176,7 +205,7 @@ function selectSample(id) {
   }
   const sub = document.createElement('div');
   sub.className = 'sub';
-  sub.textContent = '第' + parseInt(s.chapter) + '章 ' + s.chapter.replace(/_/g, ' ') + ' / 問題' + s.problem;
+  sub.textContent = chapterLabel(s.chapter) + ' / 問題' + s.problem;
   main.appendChild(meta);
   main.appendChild(sub);
 
