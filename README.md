@@ -1,13 +1,14 @@
 # Java 21 Specialist Training Workbook - Sample Code
 
-書籍『**Java 21 スペシャリスト育成問題集**』掲載コードを、
+書籍『**Java 21 スペシャリスト育成問題集**』（Java 21 Specialist Training Workbook）掲載コードを、
 実際にコンパイル・実行できる形にまとめたサンプルプロジェクトです。**Gradle のマルチモジュール構成**で、
 2 つのアプリを Docker コンテナで起動でき、いずれもブラウザ上でソース閲覧と実行・出力確認ができます。
 
-| モジュール | 内容 | 技術 | ポート |
-| --- | --- | --- | --- |
-| **core-samples** | 第1〜10章のコア Java 例（言語機能・Java 21 新機能・例外・コレクション・ストリーム・並行処理・メモリ・デザインパターン）。全 29 サンプル。 | 外部依存なしの純 JDK 21（内蔵 HTTP サーバ）。Preview 機能を使用。 | 8080 |
-| **framework-samples** | 第11〜20章のフレームワーク例（JDBC・JPA/Hibernate・Spring Boot・REST・セキュリティ・ロギング・テスト）。実際に動かせるものを収録。 | Spring Boot 3.3 / Hibernate 6 / H2 インメモリ DB。 | 8081 |
+
+| モジュール            | 内容                                                                                                                                                                                                                                                | 技術                                                              | ポート |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------ |
+| **core-samples**      | 第1〜11章・第14〜20章のうち純 JDK 21 だけで動くコア例（言語機能・Java 21 新機能・例外・コレクション・ストリーム・並行処理・メモリ・JPMS・デザインパターン・アーキテクチャ・REST・セキュリティ・テスト・ロギング・デバッグ ほか）。全 203 サンプル。 | 外部依存なしの純 JDK 21（内蔵 HTTP サーバ）。Preview 機能を使用。 | 8080   |
+| **framework-samples** | 第12〜19章のフレームワーク例（JDBC・JPA/Hibernate・Spring Boot・REST・セキュリティ・ロギング・テスト）。実際に動かせるものを収録。全 54 サンプル。                                                                                                  | Spring Boot 3.3 / Hibernate 6 / H2 インメモリ DB。                | 8081   |
 
 ---
 
@@ -26,19 +27,19 @@
 docker compose up --build
 ```
 
-- core-samples … <http://localhost:8080>
-- framework-samples … <http://localhost:8081>
+- core-samples … [http://localhost:8080](http://localhost:8080)
+- framework-samples … [http://localhost:8081](http://localhost:8081)
 
 ### 個別に Docker で起動
 
 ```bash
 # コア編
-docker build -f core-samples/Dockerfile -t java21sw-core-samples .
-docker run --rm -p 8080:8080 java21sw-core-samples
+docker build -f core-samples/Dockerfile -t java21stw300-core-samples .
+docker run --rm -p 8080:8080 java21stw300-core-samples
 
 # フレームワーク編
-docker build -f framework-samples/Dockerfile -t java21sw-framework-samples .
-docker run --rm -p 8081:8081 java21sw-framework-samples
+docker build -f framework-samples/Dockerfile -t java21stw300-framework-samples .
+docker run --rm -p 8081:8081 java21stw300-framework-samples
 ```
 
 ### ローカルで Gradle 実行（JDK 21 が必要）
@@ -80,42 +81,47 @@ curl -i http://localhost:8081/api/demo/config
 curl -i http://localhost:8081/api/demo/config -H 'If-None-Match: "config-v1"'
 ```
 
-H2 コンソールは <http://localhost:8081/h2-console>（JDBC URL: `jdbc:h2:mem:workbook`, user: `sa`）。
+H2 コンソールは [http://localhost:8081/h2-console](http://localhost:8081/h2-console)（JDBC URL: `jdbc:h2:mem:workbook`, user: `sa`）。
 
 ---
 
 ## プロジェクト構成
 
 ```
-java21-specialist-workbook-sample/      (Gradle ルート)
-├── settings.gradle.kts                 … core-samples / framework-samples を include
-├── build.gradle.kts                    … 共通設定（group/version, repositories）
-├── gradlew / gradlew.bat / gradle/      … Gradle Wrapper（8.10.2）
-├── docker-compose.yml                   … 2 サービスを定義
-├── LICENSE                              … MIT
+java21-specialist-workbook-sample/       (Gradle ルート)
+├── settings.gradle.kts                  … core-samples / framework-samples を include
+├── build.gradle.kts                     … 共通設定（group / version, repositories）
+├── gradlew / gradlew.bat / gradle/       … Gradle Wrapper（8.10.2）
+├── docker-compose.yml                    … 2 サービスを定義
+├── LICENSE                               … MIT
 │
-├── core-samples/                        … 純 JDK モジュール（Preview 有効, ポート 8080）
+├── core-samples/                         … 純 JDK モジュール（Preview 有効, ポート 8080, 全 203 サンプル）
 │   ├── build.gradle.kts
 │   ├── Dockerfile
-│   └── src/main/java/com/x5gtrn/book/java21sw/sample/
-│       ├── framework/                   … Sample / SampleRunner / SampleRegistry / WorkbookServer
-│       ├── ch01_language_oop/ … ch10_design_patterns/   … 全 29 サンプル
-│       └── (src/main/resources/web/index.html … ブラウザ UI)
+│   ├── src/main/java/com/x5gtrn/book/appendix/java21stw300/
+│   │   ├── framework/                    … Sample / SampleRunner / SampleRegistry / WorkbookServer
+│   │   ├── ch01_language_oop/ 〜 ch11_architecture/
+│   │   └── ch14_springboot/ 〜 ch20_debugging_profiling/
+│   └── src/main/resources/
+│       ├── web/index.html                … ブラウザ UI
+│       ├── booksrc/                       … UI 表示用の本文ソース
+│       └── META-INF/services/            … 第9章 ServiceLoader 用の登録ファイル
 │
-└── framework-samples/                   … Spring Boot モジュール（ポート 8081）
+└── framework-samples/                    … Spring Boot モジュール（ポート 8081, 全 54 サンプル）
     ├── build.gradle.kts
     ├── Dockerfile
-    ├── src/main/java/com/x5gtrn/book/java21sw/sample/
+    ├── src/main/java/com/x5gtrn/book/appendix/java21stw300/
     │   ├── Application.java   … Spring Boot 起動クラス（@SpringBootApplication, 最上位パッケージ）
     │   ├── springapp/   … FrameworkSample / SampleRunner / SampleController / DataSeeder
     │   ├── domain/      … Department / Employee / Product（JPA エンティティ）
     │   ├── repo/        … Spring Data リポジトリ
     │   ├── web/         … バリデーション・ETag のデモ用 REST
-    │   ├── ch12_database_jdbc/        … 問題165
-    │   ├── ch13_jpa_persistence/      … 問題174 / 176 / 179
-    │   ├── ch14_springboot/           … 問題186 / 194
-    │   ├── ch15_rest_api_http/        … 問題211 / 214
-    │   ├── ch16_security_auth/        … 問題238
+    │   ├── ch12_database_jdbc/        … 問題161〜171
+    │   ├── ch13_jpa_persistence/      … 問題172〜183
+    │   ├── ch14_springboot/           … 問題184〜204
+    │   ├── ch15_rest_api_http/        … 問題206〜218
+    │   ├── ch16_security_auth/        … 問題226 / 238
+    │   ├── ch17_testing/              … 問題202 / 252〜255
     │   └── ch19_logging_observability/… 問題278
     ├── src/main/resources/
     │   ├── application.yml             … H2 / JPA 設定（open-in-view=false 等）
@@ -123,17 +129,18 @@ java21-specialist-workbook-sample/      (Gradle ルート)
     └── src/test/java/.../ch17_testing/ … 問題249（Mockito）/ 261（Awaitility）
 ```
 
-パッケージは `com.x5gtrn.book.java21sw.sample` を起点に、章名のサブパッケージ＋問題番号入りクラス
-（例: `com.x5gtrn.book.java21sw.sample.ch13_jpa_persistence.Q176NPlusOne`）。
+パッケージは `com.x5gtrn.book.appendix.java21stw300` を起点に、章名のサブパッケージ＋問題番号入りクラス
+（例: `com.x5gtrn.book.appendix.java21stw300.ch13_jpa_persistence.Q176NPlusOne`）。
 
 ---
 
 ## 収録範囲について
 
-第11〜20章のうち、**Spring Boot / Hibernate / H2 で実際に挙動を確認できるもの**を収録しています。
-アーキテクチャ論（第11章）、デプロイ/DevOps（第18章）、プロファイリング（第20章）など、
-コードとして「実行」になじまない概念中心の項目は収録対象外です。各サンプルは本書の問題番号・タイトルに
-対応しています。
+- **core-samples** … 第1〜11章および第14〜20章から、純 JDK 21 だけで動作するサンプルを収録（全 203）。
+- **framework-samples** … 第12〜19章から、Spring Boot / Hibernate / H2 で実際に挙動を確認できるサンプルを収録（全 54）。
+
+各サンプルは本書の問題番号・タイトルに対応しています。コードとして「実行」になじまない概念中心の項目
+（純粋な設計論など）は、対応するサンプルを設けていない場合があります。
 
 ### framework-samples が実演する主な挙動
 
@@ -154,12 +161,11 @@ java21-specialist-workbook-sample/      (Gradle ルート)
 - framework-samples は H2 **インメモリ DB** で完結し、外部 DB は不要です。
   `spring.jpa.open-in-view=false`（問題174 の再現）と `hibernate.generate_statistics=true`
   （問題176 の計測）を設定しています。
-- Docker ビルドは `gradle:8.10.2-jdk21` イメージを使うため、ビルド時に Maven Central から
-  依存を解決します（インターネット接続が必要）。
+- Docker ビルドは `gradle:8.10.2-jdk21` イメージでビルドし、実行は `eclipse-temurin:21-jre` を使います。
+  ビルド時に Maven Central から依存を解決します（インターネット接続が必要）。
 
 ---
 
 ## ライセンス
 
 MIT License（[LICENSE](./LICENSE) を参照）。本サンプルコードは上記書籍の付録として公開しています。
-著作権表記の氏名（現在は `x5gtrn`）は、必要に応じて変更してください。

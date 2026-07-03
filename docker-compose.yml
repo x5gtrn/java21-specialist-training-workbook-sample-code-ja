@@ -3,8 +3,8 @@ services:
     build:
       context: .
       dockerfile: core-samples/Dockerfile
-    image: java21sw-core-samples:1.0.0
-    container_name: java21sw-core-samples
+    image: java21stw300-core-samples:1.0.0
+    container_name: java21stw300-core-samples
     ports:
       - "8080:8080"
 
@@ -12,7 +12,7 @@ services:
     build:
       context: .
       dockerfile: framework-samples/Dockerfile
-    image: java21sw-framework-samples:1.0.0
-    container_name: java21sw-framework-samples
+    image: java21stw300-framework-samples:1.0.0
+    container_name: java21stw300-framework-samples
     ports:
       - "8081:8081"
