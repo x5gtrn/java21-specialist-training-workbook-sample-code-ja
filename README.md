@@ -89,8 +89,8 @@ H2 コンソールは [http://localhost:8081/h2-console](http://localhost:8081/h
 
 ```
 java21-specialist-workbook-sample/       (Gradle ルート)
-├── settings.gradle.kts                  … core-samples / framework-samples を include
-├── build.gradle.kts                     … 共通設定（group / version, repositories）
+├── settings.gradle.kts                   … core-samples / framework-samples を include
+├── build.gradle.kts                      … 共通設定（group / version, repositories）
 ├── gradlew / gradlew.bat / gradle/       … Gradle Wrapper（8.10.2）
 ├── docker-compose.yml                    … 2 サービスを定義
 ├── LICENSE                               … MIT
@@ -104,29 +104,29 @@ java21-specialist-workbook-sample/       (Gradle ルート)
 │   │   └── ch14_springboot/ 〜 ch20_debugging_profiling/
 │   └── src/main/resources/
 │       ├── web/index.html                … ブラウザ UI
-│       ├── booksrc/                       … UI 表示用の本文ソース
+│       ├── booksrc/                      … UI 表示用の本文ソース
 │       └── META-INF/services/            … 第9章 ServiceLoader 用の登録ファイル
 │
 └── framework-samples/                    … Spring Boot モジュール（ポート 8081, 全 54 サンプル）
     ├── build.gradle.kts
     ├── Dockerfile
     ├── src/main/java/com/x5gtrn/book/appendix/java21stw300/
-    │   ├── Application.java   … Spring Boot 起動クラス（@SpringBootApplication, 最上位パッケージ）
-    │   ├── springapp/   … FrameworkSample / SampleRunner / SampleController / DataSeeder
-    │   ├── domain/      … Department / Employee / Product（JPA エンティティ）
-    │   ├── repo/        … Spring Data リポジトリ
-    │   ├── web/         … バリデーション・ETag のデモ用 REST
-    │   ├── ch12_database_jdbc/        … 問題161〜171
-    │   ├── ch13_jpa_persistence/      … 問題172〜183
-    │   ├── ch14_springboot/           … 問題184〜204
-    │   ├── ch15_rest_api_http/        … 問題206〜218
-    │   ├── ch16_security_auth/        … 問題226 / 238
-    │   ├── ch17_testing/              … 問題202 / 252〜255
-    │   └── ch19_logging_observability/… 問題278
+    │   ├── Application.java              … Spring Boot 起動クラス（@SpringBootApplication, 最上位パッケージ）
+    │   ├── springapp/                    … FrameworkSample / SampleRunner / SampleController / DataSeeder
+    │   ├── domain/                       … Department / Employee / Product（JPA エンティティ）
+    │   ├── repo/                         … Spring Data リポジトリ
+    │   ├── web/                          … バリデーション・ETag のデモ用 REST
+    │   ├── ch12_database_jdbc/           … 問題161〜171
+    │   ├── ch13_jpa_persistence/         … 問題172〜183
+    │   ├── ch14_springboot/              … 問題184〜204
+    │   ├── ch15_rest_api_http/           … 問題206〜218
+    │   ├── ch16_security_auth/           … 問題226 / 238
+    │   ├── ch17_testing/                 … 問題202 / 252〜255
+    │   └── ch19_logging_observability/   … 問題278
     ├── src/main/resources/
-    │   ├── application.yml             … H2 / JPA 設定（open-in-view=false 等）
-    │   └── static/index.html           … ブラウザ UI
-    └── src/test/java/.../ch17_testing/ … 問題249（Mockito）/ 261（Awaitility）
+    │   ├── application.yml               … H2 / JPA 設定（open-in-view=false 等）
+    │   └── static/index.html             … ブラウザ UI
+    └── src/test/java/.../ch17_testing/   … 問題249（Mockito）/ 261（Awaitility）
 ```
 
 パッケージは `com.x5gtrn.book.appendix.java21stw300` を起点に、章名のサブパッケージ＋問題番号入りクラス
